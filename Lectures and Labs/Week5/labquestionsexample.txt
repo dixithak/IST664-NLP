@@ -1,0 +1,73 @@
+Lab Week 5 
+Text for Lab Question
+
+# Define sentences for the question
+sentex1 = "I prefer a flight through Houston".split()
+sentex2 = "Jack walked with the dog".split()
+sentex3 = "John gave the dog a bone".split()
+sentex4 = "I want to book that flight".split()
+
+# extend the flight grammar:
+flight_grammar = nltk.CFG.fromstring("""
+  S -> NP VP | VP
+  VP -> V NP | V NP PP
+  PP -> P NP
+  V -> "saw" | "ate" | "walked" | "shot" | "book"
+  NP -> Prop | Det N | Det N PP
+  Prop -> "John" | "Mary" | "Bob" | "I"
+  Det -> "a" | "an" | "the" | "my" | "that"
+  N -> "man" | "dog" | "cat" | "telescope" | "park" | "elephant" | "pajamas" | "flight"
+  P -> "in" | "on" | "by" | "with"
+  """)
+
+# redefine rd_parser when you change the flight grammar
+rd_parser = nltk.RecursiveDescentParser(flight_grammar)
+for tree in rd_parser.parse(sentex1):   print (tree)
+
+
+# Extend the grammar for the flight grammar:  adding VP -> V PP to account for sentex2 
+#
+# Extend the grammar for the flight grammar:  adding VP -> V NP NP to account for sentex3 
+#
+# Extend the grammar for the flight grammar:  adding PP -> P VP to account for sentex4 
+#
+#
+flight_grammar = nltk.CFG.fromstring("""
+  S -> NP VP | VP
+  VP -> V NP | V NP PP | V PP | V NP NP
+  PP -> P NP | P VP
+  V -> "saw" | "ate" | "walked" | "shot" | "book" | "prefer" | "gave" | "want"
+  NP -> Prop | Det N | Det N PP
+  Prop -> "John" | "Mary" | "Bob" | "I" | "Houston" | "Jack"
+  Det -> "a" | "an" | "the" | "my" | "that"
+  N -> "man" | "dog" | "cat" | "telescope" | "park" | "elephant" | "pajamas" | "flight" | "bone"
+  P -> "in" | "on" | "by" | "with" | "through" | "to"
+  """)
+
+Results for sentex1
+(S
+  (NP (Prop I))
+  (VP
+    (V prefer)
+    (NP (Det a) (N flight) (PP (P through) (NP (Prop Houston))))))
+(S
+  (NP (Prop I))
+  (VP
+    (V prefer)
+    (NP (Det a) (N flight))
+    (PP (P through) (NP (Prop Houston)))))
+
+Results for sentex2
+(S
+  (NP (Prop Jack))
+  (VP (V walked) (PP (P with) (NP (Det the) (N dog)))))
+
+Results for sentex3
+(S
+  (NP (Prop John))
+  (VP (V gave) (NP (Det the) (N dog)) (NP (Det a) (N bone))))
+
+Results for sentex4
+(S
+  (NP (Prop I))
+  (VP (V want) (PP (P to) (VP (V book) (NP (Det that) (N flight))))))
